@@ -1,0 +1,559 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#0b0e0d" />
+  <link rel="icon" href="data:," />
+  <meta name="coinzilla" content="7f3884f8080e37b3914dc506d1057bdb" />
+  <title>CBOX — Charity Box</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --ink:#111514;
+      --paper:#f4f2eb;
+      --panel:#ffffff;
+      --panel-2:#e8e5dc;
+      --muted:#5d6661;
+      --line:#c8ccc7;
+      --signal:#ff5b35;
+      --signal-2:#ffd84a;
+      --mint:#96e5c2;
+      --navy:#152724;
+      --shadow:0 18px 50px rgba(18,28,25,.12);
+      --font-body:"Avenir Next","Segoe UI",system-ui,sans-serif;
+      --font-display:Georgia,"Times New Roman",serif;
+    }
+    @media (prefers-color-scheme:dark){
+      :root{
+        --ink:#eef3ef;
+        --paper:#0b0e0d;
+        --panel:#141918;
+        --panel-2:#202725;
+        --muted:#a8b3ad;
+        --line:#38413e;
+        --navy:#dce9e3;
+        --shadow:0 18px 50px rgba(0,0,0,.28);
+      }
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:88px}
+    body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.6;overflow-x:hidden}
+    a{color:inherit}
+    button,a{font:inherit}
+    button{color:inherit}
+    .wrap{width:min(1180px,calc(100% - 40px));margin-inline:auto}
+    .site-nav{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--paper) 92%,transparent);border-bottom:1px solid var(--line);backdrop-filter:blur(14px)}
+    .nav-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:22px}
+    .nav-links{display:flex;align-items:center;gap:26px;flex-wrap:wrap}
+    .nav-links a{text-decoration:none;color:var(--muted);font-size:.88rem;font-weight:700}
+    .nav-links a:hover,.nav-links a:focus-visible{color:var(--ink)}
+    .wallet-mini{display:flex;gap:8px;flex-shrink:0}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:46px;padding:0 18px;border:1px solid var(--ink);background:var(--ink);color:var(--paper);text-decoration:none;font-weight:800;cursor:pointer;border-radius:4px;transition:background .18s,color .18s,border-color .18s}
+    .btn:hover,.btn:focus-visible{background:var(--signal);border-color:var(--signal);color:#fff}
+    .btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+    .btn.ghost:hover,.btn.ghost:focus-visible{border-color:var(--ink);background:var(--panel-2)}
+    .btn.small{min-height:38px;padding:0 13px;font-size:.8rem}
+    .hero{padding:74px 0 64px;position:relative}
+    .hero-grid{display:grid;grid-template-columns:minmax(0,1.22fr) minmax(310px,.78fr);gap:64px;align-items:center}
+    .overline{display:inline-flex;align-items:center;gap:10px;margin-bottom:22px;color:var(--muted);font-size:.78rem;font-weight:900;letter-spacing:.16em;text-transform:uppercase}
+    .overline::before{content:"";width:34px;height:3px;background:var(--signal)}
+    h1,h2,h3,p{margin-top:0}
+    h1{font-family:var(--font-display);font-size:clamp(4.6rem,10vw,8.8rem);line-height:.8;letter-spacing:-.075em;margin-bottom:34px;font-weight:700}
+    h1 span{display:block;margin-top:26px;font-family:var(--font-body);font-size:clamp(1.3rem,2.2vw,2.05rem);line-height:1.1;letter-spacing:.01em;color:var(--muted);font-weight:700}
+    .hero-copy{max-width:680px;font-size:clamp(1.08rem,2vw,1.35rem);line-height:1.55;margin-bottom:30px}
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+    .hero-visual{position:relative;min-height:480px;display:grid;place-items:center}
+    .token-disc{width:min(360px,82vw);aspect-ratio:1;border-radius:50%;background:var(--signal);color:#fff;display:grid;place-items:center;box-shadow:var(--shadow);position:relative;isolation:isolate}
+    .token-disc::before,.token-disc::after{content:"";position:absolute;border:2px solid rgba(255,255,255,.45);border-radius:50%;inset:24px}
+    .token-disc::after{inset:52px;border-style:dashed}
+    .token-mark{font-family:var(--font-display);font-size:5.8rem;letter-spacing:-.08em;line-height:1;z-index:2}
+    .chain-tag{position:absolute;padding:13px 17px;background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);font-size:.76rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
+    .chain-tag.sol{right:1%;top:13%;transform:rotate(4deg)}
+    .chain-tag.bsc{left:1%;bottom:14%;transform:rotate(-5deg)}
+    .status-strip{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+    .status-item{padding:20px 24px;border-right:1px solid var(--line)}
+    .status-item:last-child{border-right:0}
+    .status-label{display:block;color:var(--muted);font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.12em;margin-bottom:5px}
+    .status-value{font-weight:900}
+    section{padding:92px 0;border-bottom:1px solid var(--line)}
+    .section-head{display:grid;grid-template-columns:.6fr 1.4fr;gap:42px;margin-bottom:48px;align-items:start}
+    .section-index{font-size:.76rem;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:var(--signal)}
+    h2{font-family:var(--font-display);font-size:clamp(2.6rem,6vw,5.7rem);line-height:.95;letter-spacing:-.055em;margin-bottom:20px}
+    .section-lead{font-size:1.16rem;max-width:720px;color:var(--muted)}
+    .manifesto{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+    .manifesto article{background:var(--panel);padding:34px;min-height:250px}
+    .manifesto .num{font-family:var(--font-display);font-size:2.5rem;color:var(--signal);display:block;margin-bottom:42px}
+    h3{font-size:1.1rem;line-height:1.3;margin-bottom:12px}
+    .manifesto p,.whitepaper p,.token-note{color:var(--muted)}
+    .games-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .game-card{min-height:290px;padding:24px;background:var(--panel);border:1px solid var(--line);display:flex;flex-direction:column;text-decoration:none;position:relative;overflow:hidden;transition:transform .18s,border-color .18s}
+    .game-card:hover,.game-card:focus-visible{transform:translateY(-4px);border-color:var(--signal)}
+    .game-art{height:126px;background:var(--panel-2);margin:-24px -24px 22px;position:relative;display:grid;place-items:center;overflow:hidden;color:var(--ink)}
+    .game-art::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:22px 22px;opacity:.65}
+    .game-glyph{z-index:1;width:76px;height:76px;border-radius:50%;display:grid;place-items:center;background:var(--ink);color:var(--paper);font-family:var(--font-display);font-size:1.8rem;border:8px solid var(--signal-2)}
+    .game-card:nth-child(2) .game-glyph,.game-card:nth-child(5) .game-glyph,.game-card:nth-child(8) .game-glyph{border-radius:3px;background:var(--signal);color:#fff}
+    .game-card:nth-child(3) .game-glyph,.game-card:nth-child(6) .game-glyph{transform:rotate(7deg);border-radius:12px;background:var(--navy);color:var(--paper)}
+    .game-type{color:var(--signal);font-size:.7rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
+    .game-card h3{font-size:1.35rem;margin:8px 0 7px}
+    .game-card p{color:var(--muted);font-size:.92rem;margin-bottom:22px}
+    .play-link{margin-top:auto;font-size:.82rem;font-weight:900;display:flex;justify-content:space-between;align-items:center}
+    .play-link::after{content:"↗";font-size:1.1rem}
+    .lobby-callout{margin-top:22px;padding:20px 22px;background:var(--signal-2);color:#17120a;display:flex;justify-content:space-between;gap:20px;align-items:center}
+    .lobby-callout p{margin:0;font-weight:800}
+    .lobby-callout .btn{background:#17120a;color:#fff;border-color:#17120a}
+    .token-layout{display:grid;grid-template-columns:1fr 1fr;gap:42px;align-items:start}
+    .token-stack{display:grid;gap:12px}
+    .token-row{display:grid;grid-template-columns:150px 1fr;gap:18px;padding:20px 0;border-bottom:1px solid var(--line)}
+    .token-row:first-child{border-top:1px solid var(--line)}
+    .token-row strong{font-size:.76rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+    .token-row span{font-weight:800}
+    .allocation{background:var(--navy);color:var(--paper);padding:38px;min-height:100%}
+    @media (prefers-color-scheme:dark){.allocation{background:#e0eae5;color:#101513}.allocation .btn{background:#101513;color:#fff}.token-disc{color:#fff}.game-card:nth-child(3) .game-glyph,.game-card:nth-child(6) .game-glyph{background:#dce9e3;color:#101513}.btn{background:var(--ink);color:var(--paper)}}
+    .allocation h3{font-family:var(--font-display);font-size:2.4rem;line-height:1.05;margin-bottom:20px}
+    .allocation p{opacity:.78}
+    .pending-list{list-style:none;padding:0;margin:26px 0 30px}
+    .pending-list li{display:flex;justify-content:space-between;gap:16px;padding:13px 0;border-bottom:1px solid color-mix(in srgb,currentColor 28%,transparent)}
+    .pending-list strong{font-size:.76rem;text-transform:uppercase;letter-spacing:.1em}
+    .notice{padding:18px 20px;border:1px solid var(--line);background:var(--panel-2);color:var(--muted);font-size:.88rem;margin-top:24px}
+    .wallet-zone{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .wallet-card{background:var(--panel);border:1px solid var(--line);padding:30px;min-height:260px;display:flex;flex-direction:column}
+    .chain-dot{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--signal-2);color:#15120a;font-weight:900;margin-bottom:32px}
+    .wallet-card:nth-child(2) .chain-dot{background:var(--mint)}
+    .wallet-card p{color:var(--muted)}
+    .wallet-card .btn{margin-top:auto;align-self:flex-start}
+    .wallet-status{margin-top:20px;padding:14px 16px;background:var(--panel-2);border-left:3px solid var(--line);font-size:.86rem;color:var(--muted);word-break:break-word}
+    .wallet-status.ok{border-left-color:#2bba72;color:var(--ink)}
+    .wallet-status.error{border-left-color:var(--signal);color:var(--ink)}
+    .donate-addr{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.82rem;word-break:break-all;background:var(--panel-2);border:1px solid var(--line);padding:12px 14px;margin:14px 0;color:var(--ink)}
+    .donate-card .btn{margin-top:auto;align-self:flex-start}
+    .donate-manifesto{font-family:var(--font-display);font-size:clamp(1.25rem,3.4vw,1.9rem);line-height:1.65;max-width:820px;margin:6px 0 40px;color:var(--ink)}
+    .donate-manifesto em{font-style:italic;color:var(--signal)}
+    .tg-join{margin:34px 0 0;border:1px solid var(--line);border-radius:10px;padding:26px 28px;
+      display:flex;flex-wrap:wrap;align-items:center;gap:18px;background:var(--panel-2)}
+    .tg-join h3{margin:0 0 6px;font-size:1.15rem}
+    .tg-join p{margin:0;color:var(--muted);font-size:.95rem;max-width:560px}
+    .tg-join .btn{margin-left:auto;text-decoration:none}
+    .whitepaper-grid{display:grid;grid-template-columns:280px 1fr;gap:48px}
+    .chapter-nav{position:sticky;top:104px;align-self:start;border-top:1px solid var(--line)}
+    .chapter-nav a{display:block;padding:12px 0;border-bottom:1px solid var(--line);text-decoration:none;color:var(--muted);font-size:.84rem;font-weight:700}
+    .chapter-nav a:hover{color:var(--ink)}
+    .whitepaper{max-width:760px}
+    .whitepaper article{padding-bottom:38px;margin-bottom:38px;border-bottom:1px solid var(--line)}
+    .whitepaper h3{font-family:var(--font-display);font-size:2rem;margin-bottom:14px}
+    .whitepaper ul{padding-left:1.15rem;color:var(--muted)}
+    .whitepaper li{margin-bottom:9px}
+    .charity-flow{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line)}
+    .flow-step{padding:26px;border-right:1px solid var(--line);background:var(--panel)}
+    .flow-step:last-child{border-right:0}
+    .flow-step .step{font-family:var(--font-display);font-size:2.8rem;color:var(--signal)}
+    .flow-step p{color:var(--muted);font-size:.9rem;margin:0}
+    .roadmap{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--line)}
+    .phase{padding:28px 28px 32px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);position:relative}
+    .phase:last-child{border-right:0}
+    .phase-status{display:inline-block;padding:5px 9px;background:var(--panel-2);font-size:.67rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;margin-bottom:58px}
+    .phase h3{font-family:var(--font-display);font-size:1.65rem}
+    .phase ul{padding-left:1rem;color:var(--muted);font-size:.9rem}
+    .phase li{margin-bottom:8px}
+    .risk{margin-top:44px;padding:28px;background:var(--panel-2);display:grid;grid-template-columns:220px 1fr;gap:28px}
+    .risk strong{font-size:.8rem;text-transform:uppercase;letter-spacing:.12em}
+    .risk p{margin:0;color:var(--muted)}
+    footer{padding:54px 0 70px}
+    .official-contact{display:grid;grid-template-columns:minmax(220px,.65fr) minmax(0,1.35fr);gap:28px;align-items:center;padding:28px;background:var(--signal-2);color:#17120a;margin-bottom:42px}
+    .official-contact h2{font-family:var(--font-body);font-size:1.35rem;line-height:1.2;letter-spacing:0;margin:0 0 5px}
+    .official-contact p{margin:0;font-size:.88rem;font-weight:700;opacity:.72}
+    .contact-actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+    .contact-link{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 16px;background:#17120a;color:#fff;border:1px solid #17120a;border-radius:4px;text-decoration:none;font-weight:850;cursor:pointer}
+    .contact-link:hover,.contact-link:focus-visible{background:#fff;color:#17120a}
+    .contact-link svg{width:19px;height:19px;flex:0 0 auto}
+    .contact-link span{min-width:0;overflow-wrap:anywhere}
+    .footer-grid{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:end}
+    .footer-mark{font-family:var(--font-display);font-size:3.8rem;line-height:1;margin-bottom:12px}
+    .footer-note{color:var(--muted);max-width:600px;font-size:.86rem}
+    .footer-links{display:flex;justify-content:flex-end;gap:18px;flex-wrap:wrap}
+    .footer-links a{text-decoration:none;font-weight:800;font-size:.83rem}
+    .toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);max-width:min(520px,calc(100% - 32px));background:var(--ink);color:var(--paper);padding:13px 17px;border-radius:4px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:50;text-align:center;font-size:.86rem}
+    .toast.show{opacity:1;transform:translate(-50%,0)}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    :focus-visible{outline:3px solid var(--signal);outline-offset:3px}
+    @media (max-width:900px){
+      .hero-grid{grid-template-columns:1fr;gap:20px}.hero-visual{min-height:400px}.section-head{grid-template-columns:1fr;gap:10px}.manifesto{grid-template-columns:1fr}.manifesto article{min-height:auto}.games-grid{grid-template-columns:repeat(2,1fr)}.token-layout,.whitepaper-grid{grid-template-columns:1fr}.chapter-nav{position:static;display:grid;grid-template-columns:repeat(2,1fr)}.charity-flow,.roadmap{grid-template-columns:repeat(2,1fr)}.flow-step:nth-child(2),.phase:nth-child(2){border-right:0}.flow-step:nth-child(-n+2){border-bottom:1px solid var(--line)}.phase{border-bottom:1px solid var(--line)}.wallet-zone{grid-template-columns:1fr}.official-contact{grid-template-columns:1fr}.contact-actions{justify-content:flex-start}.footer-grid{grid-template-columns:1fr}.footer-links{justify-content:flex-start}
+    }
+    @media (max-width:680px){
+      .wrap{width:min(100% - 28px,1180px)}.site-nav{position:relative}.nav-inner{padding:12px 0;align-items:flex-start}.nav-links{gap:10px 16px}.nav-links a:nth-child(n+4){display:none}.wallet-mini{flex-direction:column}.hero{padding-top:48px}h1{font-size:clamp(4.2rem,26vw,6.8rem)}.hero-visual{min-height:340px}.token-disc{width:min(286px,76vw)}.token-mark{font-size:4.3rem}.status-strip{grid-template-columns:1fr}.status-item{border-right:0;border-bottom:1px solid var(--line)}.status-item:last-child{border-bottom:0}section{padding:68px 0}.games-grid{grid-template-columns:1fr}.lobby-callout{align-items:flex-start;flex-direction:column}.token-row{grid-template-columns:1fr;gap:4px}.chapter-nav{grid-template-columns:1fr}.charity-flow,.roadmap{grid-template-columns:1fr}.flow-step,.flow-step:nth-child(2),.phase,.phase:nth-child(2){border-right:0;border-bottom:1px solid var(--line)}.flow-step:last-child,.phase:last-child{border-bottom:0}.risk{grid-template-columns:1fr}.chain-tag{font-size:.65rem}.chain-tag.sol{right:0}.chain-tag.bsc{left:0}.wallet-card{padding:24px}.official-contact{padding:22px}.contact-actions{display:grid}.contact-link{width:100%;justify-content:flex-start;padding:10px 12px;font-size:.8rem}
+    }
+    @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important}}
+  </style>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5705779569324025"
+     crossorigin="anonymous"></script>
+</head>
+<body>
+  <nav class="site-nav" aria-label="Primary navigation">
+    <div class="wrap nav-inner">
+      <div class="nav-links">
+        <a href="#project">Project</a>
+        <a href="#games">Games</a>
+        <a href="#token">Token</a>
+        <a href="#whitepaper">Whitepaper</a>
+        <a href="#roadmap">Roadmap</a>
+      </div>
+      <div class="wallet-mini">
+        <button class="btn ghost small" type="button" data-wallet="bsc">BSC wallet</button>
+        <button class="btn small" type="button" data-wallet="sol">SOL wallet</button>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero" id="top">
+      <div class="wrap hero-grid">
+        <div>
+          <div class="overline">Play with purpose</div>
+          <h1>CBOX<span>Charity Box</span></h1>
+          <p class="hero-copy">A dual-chain game utility token built around an inclusive promise: help people in genuine hardship without regard to nationality, skin color, race, gender, age, or region.</p>
+          <div class="hero-actions">
+            <a class="btn" href="https://game-hall-5ta3.onrender.com" target="_blank" rel="noopener noreferrer">Play free games <span aria-hidden="true">↗</span></a>
+            <a class="btn ghost" href="https://t.me/charityboxcbox" target="_blank" rel="noopener noreferrer">Join Telegram <span aria-hidden="true">↗</span></a>
+            <a class="btn ghost" href="#whitepaper">Read the whitepaper</a>
+          </div>
+        </div>
+        <div class="hero-visual" aria-label="CBOX token concept shown between Solana and BNB Smart Chain">
+          <div class="token-disc"><div class="token-mark">CBOX</div></div>
+          <div class="chain-tag sol">Solana network</div>
+          <div class="chain-tag bsc">BNB Smart Chain</div>
+        </div>
+      </div>
+      <div class="wrap status-strip" aria-label="Project status">
+        <div class="status-item"><span class="status-label">Games today</span><span class="status-value">8 titles, free to play</span></div>
+        <div class="status-item"><span class="status-label">Token status</span><span class="status-value">Bonding-curve phase (four.meme)</span></div>
+        <div class="status-item"><span class="status-label">Contract addresses</span><span class="status-value" style="font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.72em;word-break:break-all;">BSC: 0x4cca65111aa585fd9631ccd29302033c1b19ffff</span></div>
+      </div>
+    </section>
+
+    <section id="project">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="section-index">01 / Project</div>
+          <div><h2>Open the box.<br>Open a world<br>of compassion.</h2><p class="section-lead">Charity Box (CBOX) is envisioned as the consumption token for the game hall and a vehicle for transparent charitable action. The games remain free today; future releases may let players use CBOX across compatible chess, board, and card experiences.</p></div>
+        </div>
+        <div class="manifesto">
+          <article><span class="num">01</span><h3>Playable before launch</h3><p>Eight real browser games are already available. Token utility will be added only when the integration is ready, rather than presented as active today.</p></article>
+          <article><span class="num">02</span><h3>Two-chain access</h3><p>The project plans coordinated issuance on Solana and BNB Smart Chain, supported by published contracts, supply mapping, and independent security review before activation.</p></article>
+          <article><span class="num">03</span><h3>Help without borders</h3><p>Anyone facing verified hardship may be considered for support—without distinction of nationality, skin color, race, gender, age, or region—with fair review, privacy, and transparent reporting.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="games">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="section-index">02 / Game hall</div>
+          <div><h2>Eight games.<br>One open lobby.</h2><p class="section-lead">Every title below is currently free to play in the existing browser game hall. Open a card, then choose the matching title in the lobby.</p></div>
+        </div>
+        <div class="games-grid">
+          <a class="game-card" href="https://game-hall-5ta3.onrender.com" target="_blank" rel="noopener noreferrer" aria-label="Open Gomoku in the game hall">
+            <div class="game-art"><div class="game-glyph">5</div></div><span class="game-type">Strategy</span><h3>Gomoku</h3><p>Place black and white stones. Connect five first to win.</p><span class="play-link">Play free</span>
+          </a>
+          <a class="game-card" href="https://game-hall-5ta3.onrender.com" target="_blank" rel="noopener noreferrer" aria-label="Open Chinese Chess in the game hall">
+            <div class="game-art"><div class="game-glyph">CC</div></div><span class="game-type">Strategy</span><h3>Chinese Chess</h3><p>Command your pieces across the river and protect your general.</p><span class="play-link">Play free</span>
+          </a>
+          <a class="game-card" href="https://game-hall-5ta3.onrender.com" target="_blank" rel="noopener noreferrer" aria-label="Open International Chess in the game hall">
+            <div class="game-art"><div class="game-glyph">IC</div></div><span class="game-type">Strategy</span><h3>International Chess</h3><p>Plan ahead, control the board, and checkmate the opposing king.</p><span class="play-link">Play free</span>
+          </a>
+          <a class="game-card" href="https://game-hall-5ta3.onrender.com" target="_blank" rel="noopener noreferrer" aria-label="Open Junqi in the game hall">
+            <div class="game-art"><div class="game-glyph">JQ</div></div><span class="game-type">Hidden information</span><h3>Junqi</h3><p>A military board game of ranks, traps, and captured flags.</p><span class="play-link">Play free</span>
+          </a>
+          <a class="game-card" href="https://game-hall-5ta3.onrender.com" target="_blank" rel="noopener noreferrer" aria-label="Open Dou Dizhu in the game hall">
+            <div class="game-art"><div class="game-glyph">DD</div></div><span class="game-type">Cards</span><h3>Dou Dizhu</h3><p>A fast three-player contest built around bids, combinations, and timing.</p><span class="play-link">Play free</span>
+          </a>
+          <a class="game-card" href="https://game-hall-5ta3.onrender.com" target="_blank" rel="noopener noreferrer" aria-label="Open Mahjong in the game hall">
+            <div class="game-art"><div class="game-glyph">MJ</div></div><span class="game-type">Tiles</span><h3>Mahjong</h3><p>Draw, discard, and assemble a winning hand at the four-player table.</p><span class="play-link">Play free</span>
+          </a>
+          <a class="game-card" href="https://game-hall-5ta3.onrender.com" target="_blank" rel="noopener noreferrer" aria-label="Open Zha Jinhua in the game hall">
+            <div class="game-art"><div class="game-glyph">ZJ</div></div><span class="game-type">Cards</span><h3>Zha Jinhua</h3><p>Three cards, sharp reads, and carefully measured bets with virtual points.</p><span class="play-link">Play free</span>
+          </a>
+          <a class="game-card" href="https://game-hall-5ta3.onrender.com" target="_blank" rel="noopener noreferrer" aria-label="Open Texas Hold'em in the game hall">
+            <div class="game-art"><div class="game-glyph">TH</div></div><span class="game-type">Cards</span><h3>Texas Hold'em</h3><p>Build the strongest five-card hand through measured bets and community cards.</p><span class="play-link">Play free</span>
+          </a>
+        </div>
+        <div class="lobby-callout"><p>The existing lobby uses virtual points for entertainment. CBOX deposits and payments are planned, not currently active.</p><a class="btn" href="https://game-hall-5ta3.onrender.com" target="_blank" rel="noopener noreferrer">Launch game hall</a></div>
+      </div>
+    </section>
+
+    <section id="token">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="section-index">03 / Token model</div>
+          <div><h2>A utility token<br>with a charitable purpose.</h2><p class="section-lead">Charity Box (CBOX) is designed to connect game utility with compassionate assistance. Final supply, allocations, fees, contract addresses, and release schedules will be published and reviewed before launch.</p></div>
+        </div>
+        <div class="token-layout">
+          <div class="token-stack" aria-label="Planned CBOX token properties">
+            <div class="token-row"><strong>Symbol</strong><span>CBOX</span></div>
+            <div class="token-row"><strong>Name</strong><span>Charity Box</span></div>
+            <div class="token-row"><strong>Networks</strong><span>Solana + BNB Smart Chain</span></div><div class="token-row"><strong>Contract (BSC)</strong><span style="font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-weight:600;font-size:.82em;word-break:break-all;">0x4cca65111aa585fd9631ccd29302033c1b19ffff</span></div><div class="token-row"><strong>Buy / Sell tax</strong><span>5% / 5% — 90% to charity wallet, 10% burned</span></div>
+            <div class="token-row"><strong>Primary role</strong><span>Future game utility and charitable impact</span></div>
+            <div class="token-row"><strong>Current status</strong><span>Live on BNB Smart Chain (four.meme bonding curve; PancakeSwap migration pending)</span></div>
+          </div>
+          <aside class="allocation">
+            <h3>Launch data will be published before participation opens.</h3>
+            <p>A responsible token release requires exact, auditable data rather than estimates.</p>
+            <ul class="pending-list">
+              <li><strong>Total supply</strong><span>To be announced</span></li>
+              <li><strong>Team allocation</strong><span>To be announced</span></li>
+              <li><strong>Liquidity allocation</strong><span>To be announced</span></li>
+              <li><strong>Community allocation</strong><span>To be announced</span></li>
+              <li><strong>Fee policy</strong><span>To be announced</span></li>
+            </ul>
+            <a class="btn" href="#whitepaper">Review the framework</a>
+          </aside>
+        </div>
+        <div class="notice"><strong>Important distinction:</strong> base-network gas is paid to network validators and cannot be redirected by this project. The giving commitment applies only to fees and assets the project actually controls. The final policy should identify each eligible fee source, distribution schedule, recipient, transaction record, and operating cost.</div>
+      </div>
+    </section>
+
+    <section id="wallets">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="section-index">04 / Wallet access</div>
+          <div><h2>Connect by chain.</h2><p class="section-lead">These read-only entry points request your public wallet address. They do not request a message signature or transaction, and they do not prove token ownership.</p></div>
+        </div>
+        <div class="wallet-zone">
+          <article class="wallet-card">
+            <div class="chain-dot">B</div><h3>BNB Smart Chain</h3><p>Connect an EVM-compatible wallet. Official CBOX contract:<br><span style="font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.82em;word-break:break-all;">0x4cca65111aa585fd9631ccd29302033c1b19ffff</span></p><button class="btn" type="button" data-wallet="bsc">Connect BSC wallet</button><div class="wallet-status" id="bsc-status" aria-live="polite">Not connected.</div>
+          </article>
+          <article class="wallet-card">
+            <div class="chain-dot">S</div><h3>Solana</h3><p>Connect a Solana-compatible wallet. No CBOX mint address is configured yet.</p><button class="btn" type="button" data-wallet="sol">Connect SOL wallet</button><div class="wallet-status" id="sol-status" aria-live="polite">Not connected.</div>
+          </article>
+        </div>
+        <div class="notice">The official CBOX contract on BNB Smart Chain is <span style="font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.9em;word-break:break-all;">0x4cca65111aa585fd9631ccd29302033c1b19ffff</span>. Always verify the address character by character before interacting. <strong>There is no Solana version yet</strong> — any token claiming to be CBOX on Solana is a scam. Treat any other token claiming to be CBOX as unverified.</div>
+      </div>
+    </section>
+
+    <section id="whitepaper">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="section-index">05 / Whitepaper</div>
+          <div><h2>Charity without borders.<br>Help with dignity.</h2><p class="section-lead">The Charity Box working paper sets out an inclusive mission: when people give what they can, small acts of love can help build a better tomorrow. Version 0.2 describes the intended model; it is not a token sale document, legal opinion, or investment promise.</p><button class="btn ghost" id="download-paper" type="button">Download text version</button></div>
+        </div>
+        <div class="whitepaper-grid">
+          <nav class="chapter-nav" aria-label="Whitepaper chapters">
+            <a href="#wp-abstract">1. Abstract</a><a href="#wp-utility">2. Utility</a><a href="#wp-chains">3. Dual-chain design</a><a href="#wp-charity">4. Charity model</a><a href="#wp-aid">5. Community aid</a><a href="#wp-transparency">6. Transparency</a><a href="#wp-risk">7. Risks</a>
+          </nav>
+          <div class="whitepaper">
+            <article id="wp-abstract"><h3>1. Abstract</h3><p>Charity Box (CBOX) is a proposed dual-chain utility token connecting a browser game ecosystem with a transparent public-benefit mission. It is intended for future game consumption, top-ups, and compatible experiences, while eligible project-controlled fees support charitable organizations and a dedicated community aid fund. Open Charity Box. Open a world of compassion.</p></article>
+            <article id="wp-utility"><h3>2. Utility</h3><p>The initial utility objective is straightforward: allow future chess, board, card, and casual game experiences to accept CBOX for clearly disclosed in-product uses. The present game hall remains free and uses virtual entertainment points. CBOX functionality will be described as active only after contracts, game integrations, and user protections are deployed.</p><ul><li>Potential game top-ups and consumption.</li><li>Potential access to future token-enabled events or features.</li><li>No claim of profit, yield, price support, or guaranteed exchange value.</li></ul></article>
+            <article id="wp-chains"><h3>3. Dual-chain design</h3><p>CBOX is planned for Solana and BNB Smart Chain. Before launch, the project should publish the canonical mint and contract addresses, total supply accounting across both networks, bridge or synchronization logic if used, administrative permissions, liquidity policy, and independent security review. Supply must never be counted twice across chains.</p></article>
+            <article id="wp-charity"><h3>4. Charity model</h3><p>The project intends to transfer eligible project-controlled fees on a defined schedule to recognized international charitable organizations. Its humanitarian purpose is universal: assistance is not limited by nationality, skin color, race, gender, age, or geography. Each report should identify the source period, gross eligible amount, operating deductions if any, net donation, recipient, transaction evidence, and receipt where available.</p></article>
+            <article id="wp-aid"><h3>5. Community aid fund</h3><p>A separate public-benefit fund is proposed for people facing documented hardship. Anyone who genuinely needs help may apply, whether or not they are a token holder. Applications would be reviewed under published, consistent eligibility and conflict-of-interest rules. Sensitive evidence must remain private, while public reports should be aggregated and anonymized.</p></article>
+            <article id="wp-transparency"><h3>6. Transparency and governance</h3><p>Before funds are accepted, the project should publish responsible entities, wallet controls, approval thresholds, audit arrangements, treasury disclosures, charity recipients, aid criteria, privacy handling, and a process for complaints and appeals. Material policy changes should be announced before they take effect. Founder holdings will be disclosed publicly before participation opens: wallet addresses, allocation share, and lock schedule.</p></article>
+            <article id="wp-risk"><h3>7. Risks and limitations</h3><p>Digital tokens are volatile and can lose all market value. Smart contracts, bridges, wallets, exchanges, and game integrations may fail or be exploited. Regulatory treatment differs by jurisdiction. Charity status and tax treatment depend on legal structure and recipient. Participation must never be presented as a guaranteed investment or as a substitute for direct charitable giving.</p></article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="charity">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="section-index">06 / Public benefit</div>
+          <div><h2>One world.<br>One shared duty of care.</h2><p class="section-lead">No borders, identities, or ages define who deserves compassion. A credible charity commitment welcomes every person in genuine need and proves its impact through fair review, transparent transfers, and independent checks.</p></div>
+        </div>
+        <div class="charity-flow">
+          <article class="flow-step"><span class="step">01</span><h3>Define</h3><p>Publish eligible project-controlled fee sources and the transfer schedule.</p></article>
+          <article class="flow-step"><span class="step">02</span><h3>Verify</h3><p>Screen recognized charities and document legal, sanctions, and recipient checks.</p></article>
+          <article class="flow-step"><span class="step">03</span><h3>Transfer</h3><p>Move the disclosed amount through controlled wallets and retain evidence.</p></article>
+          <article class="flow-step"><span class="step">04</span><h3>Report</h3><p>Publish transaction records, receipts where available, and anonymized aid outcomes.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="donate">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="section-index">07 / Donate</div>
+          <div><h2>Every gift counts.</h2><p class="section-lead">The charity wallet is open. Any organization or individual can donate directly to the addresses below. Always verify the full address inside your own wallet app before sending — a wrong address cannot be recovered.</p></div>
+        </div>
+        <p class="donate-manifesto"><em>Love knows no borders.</em> Charity does not ask your nationality, your ethnicity, or your age — young or old, near or far, every soul in need deserves a helping hand. This wallet is open and transparent: every donation lives on-chain for all to see, and <em>every cent goes to those who need it most.</em></p>
+        <div class="wallet-zone">
+          <article class="wallet-card donate-card">
+            <div class="chain-dot">S</div><h3>Solana · SOL</h3><div class="donate-addr">AAAHE5MeasMQh1L148JZJpcxPYc5rx7eav9cfHLATxQF</div><button class="btn" type="button" data-copy="AAAHE5MeasMQh1L148JZJpcxPYc5rx7eav9cfHLATxQF">Copy address</button>
+          </article>
+          <article class="wallet-card donate-card">
+            <div class="chain-dot">B</div><h3>BNB Chain · BNB</h3><div class="donate-addr">0x321a8ea92ef5e01f7d577436557761103025bdac</div><button class="btn" type="button" data-copy="0x321a8ea92ef5e01f7d577436557761103025bdac">Copy address</button>
+          </article>
+          <article class="wallet-card donate-card">
+            <div class="chain-dot">E</div><h3>Ethereum · ETH</h3><div class="donate-addr">0x321a8ea92ef5e01f7d577436557761103025bdac</div><button class="btn" type="button" data-copy="0x321a8ea92ef5e01f7d577436557761103025bdac">Copy address</button>
+          </article>
+          <article class="wallet-card donate-card">
+            <div class="chain-dot">₿</div><h3>Bitcoin · BTC</h3><div class="donate-addr">bc1pa3zg7dt2hl60u606e7hn68y79dvscw06agrfa75sgf5qde69hj5sk9ajsk</div><button class="btn" type="button" data-copy="bc1pa3zg7dt2hl60u606e7hn68y79dvscw06agrfa75sgf5qde69hj5sk9ajsk">Copy address</button>
+          </article>
+        </div>
+        <div class="notice">BNB and ETH share one EVM address from the same wallet. Donations are voluntary and non-refundable; the project publishes donation records on a defined schedule once transfers begin.</div>
+        <div class="tg-join">
+          <div><h3>Join the community 💬</h3><p>Meet fellow givers in our public Telegram group — ask questions, follow donation updates, and help spread the word.</p></div>
+          <a class="btn" href="https://t.me/charityboxcbox" target="_blank" rel="noopener">Join Telegram</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="roadmap">
+      <div class="wrap">
+        <div class="section-head">
+          <div class="section-index">08 / Roadmap</div>
+          <div><h2>Sequence before schedule.</h2><p class="section-lead">No launch dates have been announced. Each phase should advance only after its public checks are complete.</p></div>
+        </div>
+        <div class="roadmap">
+          <article class="phase"><span class="phase-status">Current</span><h3>Foundation</h3><ul><li>Eight-game browser lobby</li><li>Utility and charity framework</li><li>Legal and entity review</li><li>Tokenomics specification</li></ul></article>
+          <article class="phase"><span class="phase-status">Planned</span><h3>Verified launch</h3><ul><li>Solana and BSC contracts</li><li>Independent security review</li><li>Published supply mapping</li><li>Official address registry</li></ul></article>
+          <article class="phase"><span class="phase-status">Planned</span><h3>Game utility</h3><ul><li>CBOX top-up integration</li><li>Clear in-game pricing</li><li>Player protection controls</li><li>Expanded compatible titles</li></ul></article>
+          <article class="phase"><span class="phase-status">Planned</span><h3>Public benefit</h3><ul><li>Charity recipient framework</li><li>Scheduled donation reports</li><li>Private aid application flow</li><li>Independent impact review</li></ul></article>
+        </div>
+        <div class="risk"><strong>Roadmap rule</strong><p>Future items are plans, not promises. Dates, allocations, partners, recipients, and integrations should be added only after they are confirmed and publicly evidenced.</p></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <section class="official-contact" aria-labelledby="official-contact-title">
+        <div><h2 id="official-contact-title">Official channels</h2><p>Follow project updates, join the community, or copy the official email address.</p></div>
+        <div class="contact-actions">
+          <a class="contact-link" href="https://x.com/CharityBoxCBOX" target="_blank" rel="noopener noreferrer" aria-label="Follow Charity Box on X at CharityBoxCBOX">
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-6.77 7.74L23.2 22h-6.24l-4.89-6.39L6.48 22H3.36l7.25-8.29L2.96 2H9.36l4.42 5.84L18.9 2Zm-1.09 17.84h1.72L8.42 4.05H6.57l11.24 15.79Z"/></svg>
+            <span>@CharityBoxCBOX</span>
+          </a>
+          <a class="contact-link" href="https://t.me/charityboxcbox" target="_blank" rel="noopener noreferrer" aria-label="Join the Charity Box Telegram group">
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+            <span>t.me/charityboxcbox</span>
+          </a>
+          <button class="contact-link" id="copy-email" type="button" aria-label="Copy official email charityboxcbox@gmail.com">
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="m3 7 9 6 9-6"/></svg>
+            <span>charityboxcbox@gmail.com</span>
+          </button>
+        </div>
+      </section>
+      <div class="footer-grid">
+      <div><div class="footer-mark">CBOX</div><p class="footer-note">Charity Box ($CBOX) is live in its bonding-curve phase on four.meme (BNB Chain). Official contract: 0x4cca65111aa585fd9631ccd29302033c1b19ffff. Charity donation addresses are published in the Donate section. Nothing here is financial, legal, or tax advice.</p></div>
+      <div class="footer-links"><a href="#project">Project</a><a href="#games">Games</a><a href="#whitepaper">Whitepaper</a><a href="#roadmap">Roadmap</a><a href="privacy.html">Privacy Policy</a><a href="#top">Back to top</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script>
+    (function(){
+      var toastTimer;
+      function toast(message){
+        var el=document.getElementById('toast');
+        el.textContent=message;
+        el.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer=setTimeout(function(){el.classList.remove('show');},3400);
+      }
+      function shortAddress(address){return address.length>14?address.slice(0,6)+'…'+address.slice(-5):address;}
+      function setStatus(chain,message,state){
+        var el=document.getElementById(chain+'-status');
+        if(!el){toast(message);return;}
+        el.textContent=message;
+        el.className='wallet-status'+(state?' '+state:'');
+      }
+      async function connectBsc(){
+        var provider=window.ethereum;
+        if(!provider){setStatus('bsc','No EVM wallet detected. Open this page inside a compatible wallet browser.','error');return;}
+        try{
+          var accounts=await provider.request({method:'eth_requestAccounts'});
+          if(!accounts||!accounts[0])throw new Error('No account returned');
+          setStatus('bsc','Connected: '+shortAddress(accounts[0])+' — no transaction requested.','ok');
+          toast('BSC-compatible wallet connected.');
+        }catch(error){
+          setStatus('bsc','Connection was not completed. No transaction was requested.','error');
+        }
+      }
+      async function connectSol(){
+        var provider=(window.phantom&&window.phantom.solana)||window.solana;
+        if(!provider||typeof provider.connect!=='function'){setStatus('sol','No Solana wallet detected. Open this page inside a compatible wallet browser.','error');return;}
+        try{
+          var result=await provider.connect();
+          var key=(result&&result.publicKey)||provider.publicKey;
+          if(!key)throw new Error('No public key returned');
+          var address=key.toString();
+          setStatus('sol','Connected: '+shortAddress(address)+' — no transaction requested.','ok');
+          toast('Solana wallet connected.');
+        }catch(error){
+          setStatus('sol','Connection was not completed. No transaction was requested.','error');
+        }
+      }
+      document.querySelectorAll('[data-wallet]').forEach(function(button){
+        button.addEventListener('click',function(){
+          if(button.getAttribute('data-wallet')==='bsc')connectBsc();else connectSol();
+        });
+      });
+      document.querySelectorAll('[data-copy]').forEach(function(button){
+        button.addEventListener('click',function(){
+          var text=button.getAttribute('data-copy');
+          function copied(){toast('Address copied. Verify it in your wallet app before sending.');}
+          function fallback(){
+            var area=document.createElement('textarea');
+            area.value=text;
+            area.setAttribute('readonly','');
+            area.style.position='fixed';
+            area.style.opacity='0';
+            document.body.appendChild(area);
+            area.select();
+            if(document.execCommand('copy'))copied();else toast('Copy failed. Address: '+text);
+            area.remove();
+          }
+          if(navigator.clipboard&&navigator.clipboard.writeText){
+            navigator.clipboard.writeText(text).then(copied).catch(fallback);
+          }else{fallback();}
+        });
+      });
+      document.getElementById('copy-email').addEventListener('click',function(){
+        var email='charityboxcbox@gmail.com';
+        function copied(){toast('Official email copied.');}
+        if(navigator.clipboard&&navigator.clipboard.writeText){
+          navigator.clipboard.writeText(email).then(copied).catch(function(){
+            var area=document.createElement('textarea');
+            area.value=email;
+            area.setAttribute('readonly','');
+            area.style.position='fixed';
+            area.style.opacity='0';
+            document.body.appendChild(area);
+            area.select();
+            if(document.execCommand('copy'))copied();else toast('Copy failed. Email: '+email);
+            area.remove();
+          });
+        }else{
+          var area=document.createElement('textarea');
+          area.value=email;
+          area.setAttribute('readonly','');
+          area.style.position='fixed';
+          area.style.opacity='0';
+          document.body.appendChild(area);
+          area.select();
+          if(document.execCommand('copy'))copied();else toast('Copy failed. Email: '+email);
+          area.remove();
+        }
+      });
+      document.getElementById('download-paper').addEventListener('click',function(){
+        var title='CBOX / CHARITY BOX — WORKING WHITEPAPER v0.2\n\n';
+        var body=Array.prototype.map.call(document.querySelectorAll('.whitepaper article'),function(article){
+          return article.innerText.trim();
+        }).join('\n\n');
+        var note='\n\nSTATUS NOTICE\nThis working paper describes a pre-launch concept. No official token contract, mint, sale, charity recipient, or aid application channel has been published. This is not financial, legal, or tax advice.\n';
+        var blob=new Blob([title+body+note],{type:'text/plain;charset=utf-8'});
+        var url=URL.createObjectURL(blob);
+        var link=document.createElement('a');
+        link.href=url;
+        link.download='CBOX-Charity-Box-Whitepaper-v0.2.txt';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+        toast('Whitepaper downloaded.');
+      });
+    })();
+  </script>
+</body>
+</html>
